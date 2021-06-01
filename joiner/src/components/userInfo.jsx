@@ -48,7 +48,6 @@ const UserInfo = () => {
       [e.target.id]: e.target.value,
     });
   };
-
   const handleSubmit = e => {
     // e.preventDefault();
     if (!inputs.userName || !inputs.email) {

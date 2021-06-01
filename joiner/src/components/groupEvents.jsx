@@ -12,22 +12,11 @@ import EventInfoButton from './modals/eventInfoButton';
 import CreateEventButton from './modals/createEventButton';
 import axios from 'axios';
 import EditGroupButton from './modals/editGroupButton';
-// import LoginModal from './modals/loginModal';
+import LoginModal from './modals/loginModal';
 
 // import LoginModal from ' ';
 
 const GroupEvents = () => {
-  //   const { eventName, date, time, information } = events;
-  const [isModal, setIsModal] = useState(false);
-
-  const openModal = () => {
-    setIsModal(true);
-  };
-
-  const closeModal = () => {
-    setIsModal(false);
-  };
-
   const { state, dispatch } = useUserContext();
   const { groupCurrentState, groupDispatch } = useGroupContext();
 
@@ -35,80 +24,37 @@ const GroupEvents = () => {
   const { host, members, events } = group;
   const { token, user, isLogin } = state;
   const { groups } = user;
-  //   const [eventState, setEventState] = useState({
-  //     // 필요???
-  //     eventName: '',
-  //     date: '',
-  //     time: '',
-  //     information: '',
-  //   });
 
-  //   useEffect(() => {
+  const leaveGroup = async () => {
+    let response = await axios.delete('/main/groupPage/groupSecession', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      data: {
+        //   [user.id]: user.id,
+        [user.id]: user.id, // group의 id
+      },
+      withCredentials: true,
+      crossDomain: true,
+    });
+    dispatch({ type: 'LEAVE_GROUP', payload: response.data.group.id });
+  };
 
-  //   })
-  //   headers: {
-  //       Authorization: `Bearer ${token}`,
-  //       'Content-Type': 'application/json',
-  //   },
-  //   withCredentials: true,
-  //   crossDomain: true,
-  //   }
-
-  //   const onEdit = useCallback(
-  //     e => {
-  //       const { name, value } = e.target;
-  //       setGroupInputs({
-  //         ...groupInputs,
-  //         [name]: value,
-  //       });
-  //     },
-  //     [groupInputs],
-  //   );
-
-  //   console.log(group);
-  //   console.log(members);
-
-  //   const handleClick = () => {};
-
-  // if islogin && leave group ->
-
-  useEffect(() => {
-    const leaveGroup = async () => {
-      let response = await axios.delete('/main/groupPage/groupSecession', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        data: {
-          //   [user.id]: user.id,
-          [user.id]: user.id, // group의 id
-        },
-        withCredentials: true,
-        crossDomain: true,
-      });
-      dispatch({ type: 'LEAVE_GROUP', payload: response.data.group.id });
-    };
-    leaveGroup(dispatch);
-  }, [groups]);
-
-  useEffect(() => {
-    const joinGroup = async () => {
-      let response = await axios.patch('/main/groupPage/groupJoin', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        data: {
-          [user.id]: user.id,
-        },
-        withCredentials: true,
-        crossDomain: true,
-      });
-      dispatch({ type: 'JOIN_GROUP', payload: response.user.groups });
-    };
-
-    joinGroup(dispatch);
-  }, [groups]);
+  const joinGroup = async () => {
+    let response = await axios.patch('/main/groupPage/groupJoin', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      data: {
+        [user.id]: user.id,
+      },
+      withCredentials: true,
+      crossDomain: true,
+    });
+    dispatch({ type: 'JOIN_GROUP', payload: response.user.groups });
+  };
 
   //     const deleteGroupMember = async () => {
   //       let response = await axios.delete('/group', {
@@ -156,11 +102,11 @@ const GroupEvents = () => {
   //   }, [group]);
 
   const handleLeaveClick = () => {
-    alert('그룹 탈퇴 완료!');
+    leaveGroup();
   };
 
   const handleJoinClick = () => {
-    alert('그룹 가입 완료!');
+    joinGroup();
   };
 
   return isLogin ? (
@@ -198,7 +144,7 @@ const GroupEvents = () => {
     <>
       <div>
         <div>
-          <IsLoginModal>그룹 가입</IsLoginModal>
+          <LoginModal>그룹 가입</LoginModal>
           {/* <CreateEventButton onClick={openModal} />
           <button onClick={openModal}>그룹 가입</button>
           <EditGroupButton onClick={openModal} /> */}

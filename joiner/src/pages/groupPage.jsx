@@ -58,14 +58,16 @@ const GroupPage = () => {
       try {
         let response = await axios.get('/main/groupPage', {
           headers: {
-            Authorization: `Bearer ${access_token}`,
             'Content-Type': 'application/json',
+          },
+          params: {
+            [group.id]: group.id,
           },
           withCredentials: true,
           crossDomain: true,
         });
         if (response.status === 200) {
-          groupDispatch({ type: 'GET_SUCCESS', payload: response.data });
+          groupDispatch({ type: 'GET_SUCCESS', payload: response.dataValues });
           return;
         }
       } catch (e) {

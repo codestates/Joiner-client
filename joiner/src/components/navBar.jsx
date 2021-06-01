@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link, useHistory, withRouter } from 'react-router-dom';
+
 import { useUserContext } from '../contexts/UserContext';
+import IsLoginModal from '../components/modals/loginModalBtn';
+import IsSignupModal from '../components/modals/signupModalBtn';
 // import {
 //   userReducer,
 //   UserStateContext,
@@ -51,8 +54,8 @@ const NavBar = ({ location }) => {
             >
               Groups
             </Link>
-            <button value="signUp">Signup</button>
-            <button value="signIn">Login</button>
+            <IsSignupModal></IsSignupModal>
+            <IsLoginModal></IsLoginModal>
           </nav>
         </>
       );
@@ -88,8 +91,8 @@ const NavBar = ({ location }) => {
             >
               Groups
             </Link>
-            <button value="signUp">Signup</button>
-            <button value="signIn">Login</button>
+            <IsSignupModal></IsSignupModal>
+            <IsLoginModal></IsLoginModal>
           </nav>
         </>
       );

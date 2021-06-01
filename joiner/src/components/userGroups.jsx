@@ -12,18 +12,18 @@ const UserGroups = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const { state, dispatch } = useUserContext();
   // const [groupState, setGroupState] = useState(groups)
-  const { user, accessToken, isLogin } = state;
+  const { user, access_token, isLogin } = state;
   const { groups } = user;
   // setGroupState(Data.groupsData);
   useEffect(() => {
     // Data.groupsData.map(el => console.log(el.events[0]));
 
-    dispatch({ type: 'GET_USERINFO' });
     const getUserInfo = async () => {
-      if (accessToken) {
+      dispatch({ type: 'GET_USERINFO' });
+      try {
         let response = await axios.get('/user/userInfo', {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${access_token}`,
             'Content-Type': 'application/json',
           },
           withCredentials: true,
@@ -32,16 +32,17 @@ const UserGroups = () => {
         if (response.status === 200) {
           dispatch({ type: 'GET_SUCCESS', payload: response.data });
         }
+      } catch (e) {
         if (response.status === 400) {
-          dispatch({ type: 'GET_USERFAILED', payload: response.error });
+          dispatch({ type: 'GET_USERFAILED', error: e });
         }
         if (response.status === 405) {
-          dispatch({ type: 'GET_USERFAILED', payload: response.error });
+          dispatch({ type: 'GET_USERFAILED', error: e });
         }
       }
-      getUserInfo(dispatch);
     };
-  }, [accessToken]);
+    getUserInfo(dispatch);
+  }, [access_token]);
 
   return (
     <div>
@@ -59,12 +60,3 @@ const UserGroups = () => {
   );
 };
 export default UserGroups;
-
-/* <div className="userGroups">
-        <ul>
-        {groups.map((el, id) => {
-            el = <li key={id}>{group}</li>
-        })}
-       </ul>
-      <button>회원 탈퇴</button>
-    </> */
