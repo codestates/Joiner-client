@@ -1,19 +1,13 @@
 import React, { useReducer, useContext, useState } from 'react';
-import {
-  userReducer,
-  useUserState,
-  useUserDispatch,
-  initialState,
-} from '../../UserContext';
-import { withRouter, Link } from 'react-router-dom';
-import Logo from './logo.jpeg';
+import { useUserContext } from '../../contexts/UserContext';
+import { Link } from 'react-router-dom';
+import Logo from '../../images/LOGO.jpg';
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
 
 const Login = ({ isOpen, close }) => {
-  const state = useUserState();
-  const dispatch = useUserDispatch();
+  const { state, dispatch } = useUserContext();
   const { email, password, err, token } = state;
   const [inputs, setInputs] = useState({ email, password });
 
@@ -35,7 +29,7 @@ const Login = ({ isOpen, close }) => {
           });
           return;
         }
-        loginDispatch({ type: 'LOGIN_FAILED', errorMessage: err });
+        dispatch({ type: 'LOGIN_FAILED', errorMessage: err });
       };
       postLogin();
     },
@@ -86,4 +80,4 @@ const Login = ({ isOpen, close }) => {
   );
 };
 
-export default withRouter(Login);
+export default Login;

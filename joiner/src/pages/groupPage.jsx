@@ -34,7 +34,8 @@ const GroupPage = () => {
   const { state } = useUserContext();
   const { groupCurrentState, groupDispatch } = useGroupContext();
   const { group, loading, error } = groupCurrentState;
-  const { user, token } = state;
+  const { host } = group;
+  const { user, access_token } = state;
 
   // useEffect(() => {
   //   dispatch({ type: 'GET_LOGIN' });
@@ -52,21 +53,24 @@ const GroupPage = () => {
   // }, [user]);
 
   useEffect(() => {
-    groupDispatch({ type: 'GET_GROUP' });
     const getGroup = async () => {
-      let response = await axios.get('/main/groupPage', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-        crossDomain: true,
-      });
-      if (response.status === 200) {
-        groupDispatch({ type: 'GET_SUCCESS', payload: response.data });
-        return;
+      groupDispatch({ type: 'GET_GROUP' });
+      try {
+        let response = await axios.get('/main/groupPage', {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true,
+          crossDomain: true,
+        });
+        if (response.status === 200) {
+          groupDispatch({ type: 'GET_SUCCESS', payload: response.data });
+          return;
+        }
+      } catch (e) {
+        groupDispatch({ type: 'GET_ERROR', error: e });
       }
-      groupDispatch({ type: 'GET_ERROR', payload: response.error });
     };
     getGroup(groupDispatch);
   }, [group, user.groups, group.events]);
@@ -77,7 +81,7 @@ const GroupPage = () => {
   return (
     <PageBody>
       <PageBodyTop>
-        <GroupImgs />
+        <GroupImgs host={host} />
         <GroupSummary group={group} />
       </PageBodyTop>
       <PageBodyBottom>

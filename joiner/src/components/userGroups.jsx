@@ -12,7 +12,7 @@ const UserGroups = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const { state, dispatch } = useUserContext();
   // const [groupState, setGroupState] = useState(groups)
-  const { user, token, isLogin } = state;
+  const { user, accessToken, isLogin } = state;
   const { groups } = user;
   // setGroupState(Data.groupsData);
   useEffect(() => {
@@ -20,10 +20,10 @@ const UserGroups = () => {
 
     dispatch({ type: 'GET_USERINFO' });
     const getUserInfo = async () => {
-      if (isLogin) {
+      if (accessToken) {
         let response = await axios.get('/user/userInfo', {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
           withCredentials: true,
@@ -38,10 +38,10 @@ const UserGroups = () => {
         if (response.status === 405) {
           dispatch({ type: 'GET_USERFAILED', payload: response.error });
         }
-        getUserInfo(dispatch);
       }
+      getUserInfo(dispatch);
     };
-  }, []);
+  }, [accessToken]);
 
   return (
     <div>

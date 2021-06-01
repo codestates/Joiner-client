@@ -63,7 +63,14 @@ export function groupReducer(state, action) {
     case 'EDIT_GROUP':
       return {
         ...state,
-        group: action.payload.group, // 확인 필요..
+        group: {
+          ...state.group,
+          groupName: action.payload.value,
+          category: action.payload.value,
+          groupIntroduce: action.payload.value,
+        },
+        // ...state,
+        // group: action.payload.group, // 확인 필요..
       };
 
     // case 'UPLOAD_IMG': // 필요한가..? 따로 구현?
@@ -118,7 +125,7 @@ export function groupReducer(state, action) {
         },
       };
     default:
-      throw new Error('');
+      return state;
   }
 }
 

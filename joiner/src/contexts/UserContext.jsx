@@ -13,9 +13,12 @@ export const initialState = {
     page: '',
   },
   // users: [],
-  token: '', // JWT store 역할
+  accessToken: '', // JWT store 역할
   //   errorMessage: null,
-  isLogin: false,
+  isLogin: true,
+  // token_type: 'bearer'
+  // accessToken:
+  // isLoading:
 };
 // const initialState = {
 // user: {
@@ -66,11 +69,16 @@ export function userReducer(state, action) {
         // user: action.payload.user,
         // token: action.payload.auth_token,
       };
-    case 'GET_SUCCESS':
+    case 'GET_USERSUCCESS':
       return {
         ...state,
         user: action.payload.user,
         token: action.payload.auth_token,
+      };
+    case 'GET_USERFAILED':
+      return {
+        ...state,
+        error: action.error,
       };
     case 'HANDLE_LOGIN':
       return {
@@ -83,6 +91,7 @@ export function userReducer(state, action) {
         ...state,
         user: action.payload.user, // 로그인 성공 시 payload: data를 불러옴
         token: action.payload.auth_token, // JWT store 역할
+        isLogin: true,
       };
     case 'LOGIN_FAILED':
       return {
